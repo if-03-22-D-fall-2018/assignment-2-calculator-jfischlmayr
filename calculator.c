@@ -24,7 +24,48 @@ int main(int argc, char const *argv[]) {
   printf("=================\n\n");
   userInput(&operation);
   getOperands(&firstOperand, &secondOperand);
+  calculate(&firstOperand, &secondOperand, &operation);
   return 0;
+}
+
+bool proveOperation(double operationResult, double* result){
+  if (operationResult > DBL_MAX)
+    {
+        printf("Overflow!\n");
+        return false;
+    }
+    else if (operationResult < DBL_MIN)
+    {
+        printf("Underflow!\n");
+        return false;
+    }
+
+    *result = operationResult;
+return true;
+}
+
+void calculate(double* firstOperand, double* secondOperand, int* operation){
+  double result;
+  switch(*operation)
+  {
+    case 1:
+        proveOperation(*firstOperand + *secondOperand, &result);
+        break;
+    case 2:
+        result = *firstOperand - *secondOperand;
+        break;
+    case 3:
+        proveOperation(*firstOperand * *secondOperand, &result);
+        break;
+    case 4:
+        if (*secondOperand == 0) {
+          printf("Division by zero!\n");
+          return;
+        }
+        result = *firstOperand / *secondOperand;
+        break;
+    printf("Result: %lf", result);
+  }
 }
 
 void getOperands(double* firstOperand, double* secondOperand) {
@@ -37,12 +78,12 @@ void getOperands(double* firstOperand, double* secondOperand) {
 bool isInputValid(int operation);
 void userInput(int* operation) {
   printf("Choose one of the following operations:\nAdd (1)\nSubtract (2)\nMultiply (3)\nDivide (4)\nStop program (-1)\n");
-  printf("Enter your choice: ");
-  scanf("%d",operation);
   do {
     if (!isInputValid(*operation)) {
-            printf("Input is not valid, try again\n\n");
-        }
+        printf("Input is not valid, try again\n\n");
+    }
+    printf("Enter your choice: ");
+    scanf("%d",operation);
 } while(!isInputValid(*operation));
 }
 
