@@ -1,12 +1,13 @@
 /*----------------------------------------------------------
  *				HTBLA-Leonding / Class: 2DHIF
  * ---------------------------------------------------------
- * Exercise Number: 1
- * Title:			Hello World
- * Author:			Jan Fischlmayr
+ * Exercise Number:  2
+ * Title:			       Calculator
+ * Author:			     Jan Fischlmayr
  * ----------------------------------------------------------
  * Description:
- * A simple programm.
+ * A simple calculator, that can do the following operations:
+ * Add, Subtract, Multiply and Divide.
  * ----------------------------------------------------------
  */
 #include <stdio.h>
@@ -15,6 +16,8 @@
 
 void userInput(int* operation);
 void getOperands(double* firstOperand, double* secondOperand);
+void calculate(double* firstOperand, double* secondOperand, int* operation);
+bool isInputValid(int operation);
 
 int main(int argc, char const *argv[]) {
   int operation;
@@ -22,26 +25,16 @@ int main(int argc, char const *argv[]) {
   double secondOperand;
   printf("Simple calculator\n");
   printf("=================\n\n");
-  userInput(&operation);
-  getOperands(&firstOperand, &secondOperand);
-  calculate(&firstOperand, &secondOperand, &operation);
+  do {
+
+    userInput(&operation);
+    if (operation == -1) {
+      break;
+    }
+    getOperands(&firstOperand, &secondOperand);
+    calculate(&firstOperand, &secondOperand, &operation);
+  } while(operation != -1);
   return 0;
-}
-
-bool proveOperation(double operationResult, double* result){
-  if (operationResult > DBL_MAX)
-    {
-        printf("Overflow!\n");
-        return false;
-    }
-    else if (operationResult < DBL_MIN)
-    {
-        printf("Underflow!\n");
-        return false;
-    }
-
-    *result = operationResult;
-return true;
 }
 
 void calculate(double* firstOperand, double* secondOperand, int* operation){
@@ -49,22 +42,59 @@ void calculate(double* firstOperand, double* secondOperand, int* operation){
   switch(*operation)
   {
     case 1:
-        proveOperation(*firstOperand + *secondOperand, &result);
+        if (*firstOperand + *secondOperand > DBL_MAX) {
+          printf("Number overflow\n");
+        }
+        else if (*firstOperand + *secondOperand < DBL_MIN) {
+          printf("Number underflow\n");
+        }
+        else {
+          result = *firstOperand + *secondOperand;
+          printf("Result: %lf\n", result);
+        }
         break;
     case 2:
-        result = *firstOperand - *secondOperand;
+    if (*firstOperand - *secondOperand > DBL_MAX) {
+      printf("Number overflow\n");
+    }
+    else if (*firstOperand - *secondOperand < DBL_MIN) {
+      printf("Number underflow\n");
+    }
+    else {
+      result = *firstOperand - *secondOperand;
+      printf("Result: %lf\n", result);
+    }
         break;
     case 3:
-        proveOperation(*firstOperand * *secondOperand, &result);
+    if (*firstOperand * *secondOperand > DBL_MAX) {
+      printf("Number overflow\n");
+    }
+    else if (*firstOperand * *secondOperand < DBL_MIN) {
+      printf("Number underflow\n");
+    }
+    else {
+      result = *firstOperand * *secondOperand;
+      printf("Result: %lf\n", result);
+    }
         break;
     case 4:
         if (*secondOperand == 0) {
           printf("Division by zero!\n");
           return;
         }
-        result = *firstOperand / *secondOperand;
+        else {
+          if (*firstOperand / *secondOperand > DBL_MAX) {
+            printf("Number overflow\n");
+          }
+          else if (*firstOperand / *secondOperand < DBL_MIN) {
+            printf("Number underflow\n");
+          }
+          else {
+            result = *firstOperand / *secondOperand;
+            printf("Result: %lf\n", result);
+          }
+        }
         break;
-    printf("Result: %lf", result);
   }
 }
 
@@ -75,20 +105,19 @@ void getOperands(double* firstOperand, double* secondOperand) {
     scanf("%lf", secondOperand);
 }
 
-bool isInputValid(int operation);
 void userInput(int* operation) {
   printf("Choose one of the following operations:\nAdd (1)\nSubtract (2)\nMultiply (3)\nDivide (4)\nStop program (-1)\n");
   do {
-    if (!isInputValid(*operation)) {
-        printf("Input is not valid, try again\n\n");
-    }
-    printf("Enter your choice: ");
+    printf("\nEnter your choice: ");
     scanf("%d",operation);
-} while(!isInputValid(*operation));
+    if (!isInputValid(*operation)) {
+        printf("Input not allowed, try again\n\n");
+    }
+  } while(!isInputValid(*operation));
 }
 
 bool isInputValid(int operation) {
-  if (operation >= -1 && operation <= 4) {
+  if (operation >= -1 && operation <= 4 && operation != 0) {
     return true;
   }
   else{
